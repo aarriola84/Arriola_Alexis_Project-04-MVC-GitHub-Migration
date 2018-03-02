@@ -16,6 +16,7 @@ import javafx.scene.text.FontWeight;
 
 /**
  * @author Alexis Arriola
+ * Extends the BorderPane class to be used as the main view of the citation system.
  */
 public class CitationView extends BorderPane
 {  
@@ -329,7 +330,10 @@ public class CitationView extends BorderPane
     }
     
     //functions
-    //function that gets information from datamodel
+    /**
+     * Prints current citation to the text area.
+     * @param currentCitation 
+     */
     public void printCurrentTicket(ParkingCitation currentCitation)
     {
         String info = 
@@ -350,6 +354,9 @@ public class CitationView extends BorderPane
         currentText.appendText(info);
     }
     
+    /**
+     * Clears the GUI text fields.
+     */
     public void clearFields()
     {
         getLicenseTF().clear();

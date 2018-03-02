@@ -2,6 +2,7 @@ package parking_citation;
 
 /**
  * @author Alexis Arriola
+ * Represents a ticket in the citation system.
  */
 public class ParkingCitation 
 {

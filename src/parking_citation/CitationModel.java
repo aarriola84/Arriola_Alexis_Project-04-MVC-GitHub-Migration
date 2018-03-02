@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 /**
  * @author Alexis Arriola
+ * Serves as the database for the ticket system.
  */
 public class CitationModel 
 {
@@ -19,6 +20,10 @@ public class CitationModel
     }
     
     //functions
+    /**
+     * Adds a ticket to the ticket database.
+     * @param tick 
+     */
     public void addTicket(ParkingCitation tick)
     {
         getTickets().add(tick);

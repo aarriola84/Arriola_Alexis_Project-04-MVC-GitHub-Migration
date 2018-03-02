@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 
 /**
  * @author Alexis Arriola
+ * Serves as the controller for the citation system.
  */
 public class CitationController 
 {
@@ -25,6 +26,9 @@ public class CitationController
         attachHandlers();
     }
     
+    /**
+     * Attaches handlers to their respected buttons.
+     */
     public void attachHandlers()
     {
         //button actions

@@ -8,7 +8,6 @@ import parking_citation.CitationModel;
 import parking_citation.CitationView;
 
 /**
- *
  * @author Alexis Arriola
  */
 public class SWE_Project03 extends Application 
