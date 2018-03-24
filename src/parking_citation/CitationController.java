@@ -40,7 +40,7 @@ public class CitationController
                 ticketCount++;
                 String license = citationView.getLicenseTF().getText();
                 String state = citationView.getStateTF().getText();
-                String permit = citationView.getStateTF().getText();
+                String permit = citationView.getPermitTF().getText();
                 String vehicle = citationView.getVehicleTF().getText();
                 String color = citationView.getColorTF().getText();
                 String date = citationView.getDateTF().getText();
@@ -103,6 +103,30 @@ public class CitationController
                     citationModel.getTickets().get(currentIndex).setPaid(!pay);
                     ParkingCitation currentCitation = citationModel.getTickets().get(currentIndex);
                     citationView.printCurrentTicket(currentCitation);
+                }
+            }
+        });
+        citationView.getStoreBtn().setOnAction(new EventHandler<ActionEvent>() 
+        {
+            @Override
+            public void handle(ActionEvent event) {
+                citationModel.storeTickets();
+            }
+        });
+        citationView.getReadBtn().setOnAction(new EventHandler<ActionEvent>() 
+        {
+            @Override
+            public void handle(ActionEvent event) {
+                citationModel.readTickets();
+            }
+        });
+        citationView.getViewBtn().setOnAction(new EventHandler<ActionEvent>() 
+        {
+            @Override
+            public void handle(ActionEvent event) {
+                for (ParkingCitation tick : citationModel.getTickets())
+                {
+                    citationView.printTicket(tick);
                 }
             }
         });

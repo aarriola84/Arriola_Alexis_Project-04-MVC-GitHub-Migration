@@ -19,7 +19,7 @@ import javafx.scene.text.FontWeight;
  * Extends the BorderPane class to be used as the main view of the citation system.
  */
 public class CitationView extends BorderPane
-{  
+{
     //the different gui components
     private GridPane ticketForm = new GridPane();  //center - citation form
     private VBox buttonBox = new VBox();           //left - Vertical box that is going to hold buttons
@@ -70,6 +70,9 @@ public class CitationView extends BorderPane
     private Button printBtn = new Button("Print Citation");
     private Button payBtn = new Button("Paid/Unpaid");
     private Button exitBtn = new Button("Exit System");
+    private Button readBtn = new Button("Read File");
+    private Button storeBtn = new Button("Store to File");
+    private Button viewBtn = new Button("View All");
     
     //feedback area variables
     private TextArea feedbackText = new TextArea();
@@ -125,7 +128,10 @@ public class CitationView extends BorderPane
         addBtn.setPrefWidth(100);
         payBtn.setPrefWidth(100);
         exitBtn.setPrefWidth(100);
-        buttonBox.getChildren().addAll(addBtn, printBtn, payBtn, exitBtn);
+        readBtn.setPrefWidth(100);
+        storeBtn.setPrefWidth(100);
+        viewBtn.setPrefWidth(100);
+        buttonBox.getChildren().addAll(addBtn, printBtn, payBtn, readBtn, storeBtn, viewBtn, exitBtn);
         
         //feedback
         feedbackLbl.setFont(Font.font("Times New Roman", FontWeight.BOLD, FontPosture.REGULAR, 25));
@@ -175,6 +181,24 @@ public class CitationView extends BorderPane
     }
     public void setRightBtn(Button rightBtn) {
         this.rightBtn = rightBtn;
+    }
+    public Button getReadBtn() {
+        return readBtn;
+    }
+    public void setReadBtn(Button readBtn) {
+        this.readBtn = readBtn;
+    }
+    public Button getStoreBtn() {
+        return storeBtn;
+    }
+    public void setStoreBtn(Button storeBtn) {
+        this.storeBtn = storeBtn;
+    }
+    public Button getViewBtn() {
+        return viewBtn;
+    }
+    public void setViewBtn(Button viewBtn) {
+        this.viewBtn = viewBtn;
     }
     //label properties
     public Label getCurrentLbl() {
@@ -351,6 +375,25 @@ public class CitationView extends BorderPane
                     + "\nTicket Status: " + currentCitation.getStatus()
                     + "\nFeedback: " + currentCitation.getFeedback();
         currentText.clear();
+        currentText.appendText(info);
+    }
+    
+    public void printTicket(ParkingCitation currentCitation)
+    {
+        String info = 
+                    "Ticket No: " + currentCitation.getTicketNo()
+                    + "\nLicense No: " + currentCitation.getLicenseNo() 
+                    + "\nState: " + currentCitation.getState() 
+                    + "\nPermit No: " + currentCitation.getPermitNo() 
+                    + "\nVehicle Make/Model: " + currentCitation.getVehicle() 
+                    + "\nColor: " + currentCitation.getColor() 
+                    + "\nReason: " + currentCitation.getReason() 
+                    + "\nDate: " + currentCitation.getDate() 
+                    + "\nLocation: " + currentCitation.getLocation() 
+                    + "\nTime: " + currentCitation.getTime() 
+                    + "\nIssued By: " + currentCitation.getIssuedBy()
+                    + "\nTicket Status: " + currentCitation.getStatus()
+                    + "\nFeedback: " + currentCitation.getFeedback() + "\n";
         currentText.appendText(info);
     }
     
