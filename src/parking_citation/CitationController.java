@@ -3,6 +3,7 @@ package parking_citation;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
 
 /**
  * @author Alexis Arriola
@@ -36,26 +37,62 @@ public class CitationController
         {
             @Override
             public void handle(ActionEvent event) {
+                boolean blank = false;
                 //get information from view
-                ticketCount++;
+                String id = citationView.getIdTF().getText();
+                if (id.equalsIgnoreCase(""))
+                    blank = true;
                 String license = citationView.getLicenseTF().getText();
+                if (license.equalsIgnoreCase(""))
+                    blank = true;
                 String state = citationView.getStateTF().getText();
+                if (state.equalsIgnoreCase(""))
+                    blank = true;
                 String permit = citationView.getPermitTF().getText();
+                if (permit.equalsIgnoreCase(""))
+                    blank = true;
                 String vehicle = citationView.getVehicleTF().getText();
+                if (vehicle.equalsIgnoreCase(""))
+                    blank = true;
                 String color = citationView.getColorTF().getText();
+                if (color.equalsIgnoreCase(""))
+                    blank = true;
                 String date = citationView.getDateTF().getText();
+                if (date.equalsIgnoreCase(""))
+                    blank = true;
                 String location = citationView.getLocationTF().getText();
+                if (location.equalsIgnoreCase(""))
+                    blank = true;
                 String time = citationView.getTimeTF().getText();
+                if (time.equalsIgnoreCase(""))
+                    blank = true;
                 String issued = citationView.getIssuedTF().getText();
+                if (issued.equalsIgnoreCase(""))
+                    blank = true;
                 String reason = citationView.getReasonTF().getText();
+                if (reason.equalsIgnoreCase(""))
+                    blank = true;
                 String feedback = citationView.getFeedbackText().getText();
                 
-                ParkingCitation currentCitation = new ParkingCitation(ticketCount, false, license, state,
+                
+                if (blank)
+                {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Message");
+                    alert.setHeaderText("Blank field");
+                    alert.setContentText("Cannot have any blank fields!");
+                    alert.showAndWait();
+                }
+                else
+                {
+                    ParkingCitation currentCitation = new ParkingCitation(Integer.parseInt(id), false, license, state,
                                                            permit, vehicle, color,
                                                            date, location, time,
-                                                           issued, reason, feedback);
-                citationModel.addTicket(currentCitation);
-                citationView.clearFields();
+                                                           issued, reason, feedback, "Unpaid");
+                   citationModel.addTicket(currentCitation);
+                   citationView.clearFields(); 
+                }
+                
             }
         });
         citationView.getPrintBtn().setOnAction(new EventHandler<ActionEvent>() 
@@ -106,24 +143,18 @@ public class CitationController
                 }
             }
         });
-        citationView.getStoreBtn().setOnAction(new EventHandler<ActionEvent>() 
-        {
-            @Override
-            public void handle(ActionEvent event) {
-                citationModel.storeTickets();
-            }
-        });
         citationView.getReadBtn().setOnAction(new EventHandler<ActionEvent>() 
         {
             @Override
             public void handle(ActionEvent event) {
-                citationModel.readTickets();
+                ticketCount = citationModel.readTickets();
             }
         });
         citationView.getViewBtn().setOnAction(new EventHandler<ActionEvent>() 
         {
             @Override
             public void handle(ActionEvent event) {
+                citationView.clearTA();
                 for (ParkingCitation tick : citationModel.getTickets())
                 {
                     citationView.printTicket(tick);

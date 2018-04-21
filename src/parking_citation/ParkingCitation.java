@@ -24,7 +24,7 @@ public class ParkingCitation
     
     //constructor
     public ParkingCitation(int ticketNo, boolean paid, String licenseNo, String state, String permitNo, String vehicle, 
-            String color, String date, String location, String time, String issuedBy, String reason, String feedback)
+            String color, String date, String location, String time, String issuedBy, String reason, String feedback, String status)
     {
         this.ticketNo = ticketNo;
         this.paid = paid;

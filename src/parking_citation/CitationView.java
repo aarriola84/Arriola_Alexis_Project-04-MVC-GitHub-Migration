@@ -32,6 +32,7 @@ public class CitationView extends BorderPane
     //labels
     private Label currentLbl = new Label("Current Citation");
     private Label titleLbl = new Label("Citation Form");
+    private Label idLbl = new Label("Ticket No");
     private Label licenseLbl = new Label("License Number");
     private Label stateLbl = new Label("State");
     private Label permitLbl = new Label("Permit Number");
@@ -43,6 +44,7 @@ public class CitationView extends BorderPane
     private Label issuedLbl = new Label("Issued By");
     private Label reasonLbl = new Label("Reason");
     //textfields
+    private TextField idTF = new TextField();
     private TextField licenseTF = new TextField();
     private TextField stateTF = new TextField();
     private TextField permitTF = new TextField();
@@ -70,8 +72,7 @@ public class CitationView extends BorderPane
     private Button printBtn = new Button("Print Citation");
     private Button payBtn = new Button("Paid/Unpaid");
     private Button exitBtn = new Button("Exit System");
-    private Button readBtn = new Button("Read File");
-    private Button storeBtn = new Button("Store to File");
+    private Button readBtn = new Button("Read DB");
     private Button viewBtn = new Button("View All");
     
     //feedback area variables
@@ -91,7 +92,7 @@ public class CitationView extends BorderPane
         currentText.setMaxSize(width, height);
         currentText.setEditable(false);
         ticketForm.setHgap(10);
-        ticketFormBox.getChildren().addAll(licenseLbl, licenseTF, stateLbl, stateTF,
+        ticketFormBox.getChildren().addAll(idLbl, idTF, licenseLbl, licenseTF, stateLbl, stateTF,
                                            permitLbl, permitTF, vehicleLbl, vehicleTF,
                                            colorLbl, colorTF,  reasonLbl, reasonTF, dateLbl, dateTF, locationLbl,
                                            locationTF, timeLbl, timeTF, issuedLbl, issuedTF);
@@ -129,9 +130,8 @@ public class CitationView extends BorderPane
         payBtn.setPrefWidth(100);
         exitBtn.setPrefWidth(100);
         readBtn.setPrefWidth(100);
-        storeBtn.setPrefWidth(100);
         viewBtn.setPrefWidth(100);
-        buttonBox.getChildren().addAll(addBtn, printBtn, payBtn, readBtn, storeBtn, viewBtn, exitBtn);
+        buttonBox.getChildren().addAll(addBtn, printBtn, payBtn, readBtn, viewBtn, exitBtn);
         
         //feedback
         feedbackLbl.setFont(Font.font("Times New Roman", FontWeight.BOLD, FontPosture.REGULAR, 25));
@@ -187,12 +187,6 @@ public class CitationView extends BorderPane
     }
     public void setReadBtn(Button readBtn) {
         this.readBtn = readBtn;
-    }
-    public Button getStoreBtn() {
-        return storeBtn;
-    }
-    public void setStoreBtn(Button storeBtn) {
-        this.storeBtn = storeBtn;
     }
     public Button getViewBtn() {
         return viewBtn;
@@ -286,6 +280,12 @@ public class CitationView extends BorderPane
         this.feedbackLbl = feedbackLbl;
     }
     //textfield properties
+    public TextField getIdTF(){
+        return idTF;
+    }
+    public void setIdTF(TextField idTF){
+        this.idTF = idTF;
+    }
     public TextField getLicenseTF() {
         return licenseTF;
     }
@@ -393,7 +393,7 @@ public class CitationView extends BorderPane
                     + "\nTime: " + currentCitation.getTime() 
                     + "\nIssued By: " + currentCitation.getIssuedBy()
                     + "\nTicket Status: " + currentCitation.getStatus()
-                    + "\nFeedback: " + currentCitation.getFeedback() + "\n";
+                    + "\nFeedback: " + currentCitation.getFeedback() + "\n\n";
         currentText.appendText(info);
     }
     
@@ -402,6 +402,7 @@ public class CitationView extends BorderPane
      */
     public void clearFields()
     {
+        getIdTF().clear();
         getLicenseTF().clear();
         getStateTF().clear();
         getPermitTF().clear();
@@ -413,5 +414,10 @@ public class CitationView extends BorderPane
         getIssuedTF().clear();
         getReasonTF().clear();
         getFeedbackText().clear();
+    }
+    
+    public void clearTA()
+    {
+        currentText.clear();
     }
 }

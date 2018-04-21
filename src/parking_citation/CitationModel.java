@@ -1,11 +1,12 @@
 package parking_citation;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.OutputStreamWriter;
+import database.Database;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
+import javafx.scene.control.Alert;
 
 /**
  * @author Alexis Arriola
@@ -15,24 +16,10 @@ public class CitationModel
 {
     //data
     private ArrayList <ParkingCitation> tickets = new ArrayList<>();
-    File file = new File("tickets.dat");
-    
+    Database db = Database.getSingletonOfdatabase();
     
     public CitationModel()
     {
-        try
-        {
-            if(!file.exists())
-            {
-                file.createNewFile();
-            }
-            
-        }
-        catch(Exception e)
-        {
-            System.out.println("Exception creating file: " + e);
-        }
-        
     } 
     
     //properties
@@ -45,109 +32,101 @@ public class CitationModel
     
     //functions
     /**
-     * Adds a ticket to the ticket database.
+     * Adds a ticket to the citation database.
      * @param tick 
      */
     public void addTicket(ParkingCitation tick)
     {
-        getTickets().add(tick);
-    }
-    /**
-     * Stores a ticket to the ticket file.
-     * @param tick
-     */
-    public void storeTickets()
-    {
-        try(OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(file)))
+        try
         {
-            for (ParkingCitation tick : tickets)
+            Connection conn = db.getConn();
+            Statement stmt = db.getStmnt();
+            ResultSet rs = db.getResul();
+        
+            rs = stmt.executeQuery("select * from citation where id = " + tick.getTicketNo());
+            if (!rs.next())
             {
-                out.flush();
-                out.append("ticketNo\n");
-                out.append(Integer.toString(tick.getTicketNo()) + "\n");
-                out.append("licenseNo\n");
-                out.append(tick.getLicenseNo() + "\n");
-                out.append("state\n");
-                out.append(tick.getState() + "\n");
-                out.append("permit\n");
-                out.append(tick.getPermitNo() + "\n");
-                out.append("vehicle\n");
-                out.append(tick.getVehicle() + "\n");
-                out.append("color\n");
-                out.append(tick.getColor() + "\n");
-                out.append("reason\n");
-                out.append(tick.getReason() + "\n");
-                out.append("date\n");
-                out.append(tick.getDate() + "\n");
-                out.append("location\n");
-                out.append(tick.getLocation() + "\n");
-                out.append("time\n");
-                out.append(tick.getTime() + "\n");
-                out.append("issuer\n");
-                out.append(tick.getIssuedBy() + "\n");
-                out.append("status\n");
-                out.append(tick.getStatus() + "\n");
-                out.append("feedback\n");
-                out.append(tick.getFeedback() + "\n");
+                PreparedStatement prepStmnt = conn.prepareStatement("INSERT into citation VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                prepStmnt.setInt(1, tick.getTicketNo());
+                prepStmnt.setInt(2, 0);
+                prepStmnt.setString(3, tick.getLicenseNo());
+                prepStmnt.setString(4, tick.getState());
+                prepStmnt.setString(5, tick.getPermitNo());
+                prepStmnt.setString(6, tick.getVehicle());
+                prepStmnt.setString(7, tick.getColor());
+                prepStmnt.setString(8, tick.getDate());
+                prepStmnt.setString(9, tick.getLocation());
+                prepStmnt.setString(10, tick.getTime());
+                prepStmnt.setString(11, tick.getIssuedBy());
+                prepStmnt.setString(12, tick.getReason());
+                prepStmnt.setString(13, tick.getStatus());
+                prepStmnt.setString(14, tick.getFeedback());
+                prepStmnt.executeUpdate();
             }
-            out.close();
-        }
-        catch(Exception e)
-        {
-            System.out.println("Exception storing ticket: " + e);
-        }
-    }
-    
-    public void readTickets()
-    {
-        //open the file
-        try (BufferedReader in = new BufferedReader(new FileReader(file)))
-        {
-            String line;
-            boolean stats;
-            while ((line = in.readLine()) != null)
+            else
             {
-                int ticketCount = Integer.parseInt(in.readLine());
-                line = in.readLine();
-                String license = in.readLine();
-                line = in.readLine();
-                String state = in.readLine();
-                line = in.readLine();
-                String permit = in.readLine();
-                line = in.readLine();
-                String vehicle = in.readLine();
-                line = in.readLine();
-                String color = in.readLine();
-                line = in.readLine();
-                String reason = in.readLine();
-                line = in.readLine();
-                String date = in.readLine();
-                line = in.readLine();
-                String location = in.readLine();
-                line = in.readLine();
-                String time = in.readLine();
-                line = in.readLine();
-                String issued = in.readLine();
-                line = in.readLine();
-                String status = in.readLine();
-                line = in.readLine();
-                String feedback = in.readLine();
-                if(status.equals("Unpaid"))
-                    stats = false;
-                else
-                    stats = true;
-                    
-                ParkingCitation currentCitation = new ParkingCitation(ticketCount, stats, license, state,
-                                                           permit, vehicle, color,
-                                                           date, location, time,
-                                                           issued, reason, feedback);
-                addTicket(currentCitation);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Message");
+                alert.setHeaderText("Duplicate Ticket Number");
+                alert.setContentText("Cannot add a ticket with the same ticket no.");
+                alert.showAndWait();
             }
-            in.close();
+            
         }
         catch (Exception e)
         {
-            System.out.println("Exception opening file to read: " + e);
+            System.out.println("Error adding citation to db: " + e);
         }
+    }
+    
+    /***
+     * Reads the tickets from the database schema and returns the total ticket count.
+     * @return 
+     */
+    public int readTickets()
+    {
+        boolean paid = false;
+        int tickCnt = 0;
+        tickets.clear();
+        try
+        {
+            //get the statement from db
+            Statement stmt = db.getStmnt();
+            ResultSet rs = db.getResul();
+        
+            rs = stmt.executeQuery("select * from citation");
+            while (rs.next())
+            {
+                if(rs.getInt("paid") > 0)
+                    paid = true;
+                else
+                    paid = false;
+                ParkingCitation currTick = new ParkingCitation(
+                rs.getInt("id"),
+                paid,
+                rs.getString("licenseNo"),
+                rs.getString("state"),
+                rs.getString("permitNo"),
+                rs.getString("vehicle"),
+                rs.getString("color"),
+                rs.getString("date"),
+                rs.getString("location"),
+                rs.getString("time"),
+                rs.getString("issuer"),
+                rs.getString("reason"),
+                rs.getString("feedback"),
+                rs.getString("status"));
+                
+                tickCnt++;
+                tickets.add(currTick);
+            }
+            
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error retrieving from db: " + e);
+        }
+        
+        return tickCnt;
     }
 }
